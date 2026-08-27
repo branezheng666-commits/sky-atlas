@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>天空图鉴 · 先进民航客机</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="bg-sky" id="bg-sky"></div>
+  <header class="nav">
+    <div class="wrap nav-inner">
+      <div class="brand"><div class="brand-mark">✈</div>天空图鉴</div>
+      <nav class="nav-links">
+        <a href="#learn">入门课堂</a>
+        <a href="#makers">飞机制造商</a>
+        <a href="#atlas">机型图鉴</a>
+        <a href="#compare">对比台</a>
+        <a href="#quiz">小测验</a>
+        <a href="#gloss">航空词典</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="kicker">FOR YOUNG AVIATION FANS</div>
+          <h1>给小朋友的<br><span>民航客机图鉴</span></h1>
+          <p class="lead">按制造商和飞机种类，介绍当今世界上最重要的先进民航客机。</p>
+          <div class="hero-actions">
+            <button class="btn btn-gold" data-jump="#atlas">打开机型图鉴</button>
+            <button class="btn btn-ghost" data-jump="#learn">先学分类</button>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/A6-EDY_A380_Emirates_31_jan_2013_jfk_%288442269364%29_%28cropped%29.jpg/960px-A6-EDY_A380_Emirates_31_jan_2013_jfk_%288442269364%29_%28cropped%29.jpg" alt="阿联酋航空空客A380">
+          <div class="hero-badge">空客 A380 · 民航史上最大的双层客机</div>
+        </div>
+      </div>
+      <div class="wrap stats">
+        <div class="stat"><b>15</b><span>重点机型</span></div>
+        <div class="stat"><b>5</b><span>制造商</span></div>
+        <div class="stat"><b>4</b><span>飞机类别</span></div>
+        <div class="stat"><b>853</b><span>A380 最多能坐多少人</span></div>
+      </div>
+    </section>
+    <section id="learn"><div class="wrap">
+      <h2 class="sec-title">入门课堂：飞机可以怎么分？</h2>
+      <p class="sec-sub">先记住这四个词，再看图鉴就会轻松很多。</p>
+      <div class="cards-4">
+        <article class="learn-card"><div class="ico">1</div><h3>窄体客机</h3><p>客舱只有一条过道。代表是 737、A320、C919。</p></article>
+        <article class="learn-card"><div class="ico">2</div><h3>宽体客机</h3><p>客舱有两条过道，能飞跨洋远程。代表是 787、A350、777。</p></article>
+        <article class="learn-card"><div class="ico">3</div><h3>超大型客机</h3><p>体型巨大，常常四发，有的还是双层。代表是 A380 和 747。</p></article>
+        <article class="learn-card"><div class="ico">4</div><h3>支线客机</h3><p>连接中小城市或海岛。代表是 C909、E2、ATR 72。</p></article>
+      </div>
+    </div></section>
+    <section id="makers"><div class="wrap">
+      <h2 class="sec-title">飞机制造商大厅</h2>
+      <p class="sec-sub">点卡片会跳到对应图鉴。</p>
+      <div class="cards-3">
+        <article class="maker-card" data-maker="boeing"><div class="maker-logo boeing">B</div><h3>波音 Boeing</h3><p>737 MAX、787、777X、747。</p></article>
+        <article class="maker-card" data-maker="airbus"><div class="maker-logo airbus">A</div><h3>空客 Airbus</h3><p>A320neo、A321XLR、A330neo、A350、A380、A220。</p></article>
+        <article class="maker-card" data-maker="comac"><div class="maker-logo comac">C</div><h3>中国商飞 COMAC</h3><p>C909、C919，以及研制中的 C929。</p></article>
+        <article class="maker-card" data-maker="embraer"><div class="maker-logo embraer">E</div><h3>巴航工业 Embraer</h3><p>E195-E2 等支线喷气客机。</p></article>
+        <article class="maker-card" data-maker="atr"><div class="maker-logo atr">P</div><h3>ATR</h3><p>ATR 72 涡桨支线客机。</p></article>
+      </div>
+    </div></section>
+    <section id="atlas"><div class="wrap">
+      <h2 class="sec-title">机型图鉴</h2>
+      <p class="sec-sub">点卡片打开完整参数。</p>
+      <div class="toolbar">
+        <input class="search" id="q" placeholder="搜索：C919、梦想客机、空客…">
+        <button class="chip on" data-maker="all">全部厂家</button>
+        <button class="chip" data-maker="boeing">波音</button>
+        <button class="chip" data-maker="airbus">空客</button>
+        <button class="chip" data-maker="comac">商飞</button>
+        <button class="chip" data-maker="embraer">巴航工业</button>
+        <button class="chip" data-maker="atr">ATR</button>
+        <button class="chip on" data-type="all">全部类型</button>
+        <button class="chip" data-type="窄体">窄体</button>
+        <button class="chip" data-type="宽体">宽体</button>
+        <button class="chip" data-type="超大型">超大型</button>
+        <button class="chip" data-type="支线">支线</button>
+      </div>
+      <div class="grid" id="grid"></div>
+    </div></section>
+    <section id="compare"><div class="wrap">
+      <h2 class="sec-title">对比台</h2>
+      <div class="compare-box">
+        <div class="compare-pick"><select id="c1"></select><select id="c2"></select></div>
+        <div class="compare-table"><table class="table"><thead><tr><th>项目</th><th>飞机 A</th><th>飞机 B</th></tr></thead><tbody id="compare-body"></tbody></table></div>
+      </div>
+    </div></section>
+    <section id="quiz"><div class="wrap">
+      <h2 class="sec-title">航迷小测验</h2>
+      <div class="quiz"><h3 id="quiz-q"></h3><div id="quiz-opts"></div><p id="quiz-msg" class="sec-sub"></p>
+      <button class="btn btn-gold" id="next-q" style="margin-top:16px">下一题</button></div>
+    </div></section>
+    <section id="gloss"><div class="wrap">
+      <h2 class="sec-title">航空小词典</h2>
+      <div class="gloss">
+        <div class="gloss-item"><b>航程</b> 飞机能飞多远。</div>
+        <div class="gloss-item"><b>最大起飞重量</b> 离开跑道时允许的最大重量。</div>
+        <div class="gloss-item"><b>马赫数</b> 速度和音速的比。0.85 马赫大约每小时 900 公里。</div>
+        <div class="gloss-item"><b>涡扇发动机</b> 现代喷气客机最常见的发动机。</div>
+        <div class="gloss-item"><b>涡桨发动机</b> 用螺旋桨，短途更省油。</div>
+        <div class="gloss-item"><b>电传操纵</b> 飞行员指令变成电信号交给电脑。</div>
+        <div class="gloss-item"><b>复合材料</b> 碳纤维等轻材料，787 和 A350 用得多。</div>
+      </div>
+    </div></section>
+  </main>
+  <footer><div class="wrap">天空图鉴 · 参数为公开资料典型值。C929 仍在研制。</div></footer>
+  <div class="modal" id="modal"><div class="sheet">
+    <div class="sheet-hero"><img id="sheet-img" alt=""><button class="sheet-close" id="sheet-close">×</button></div>
+    <div class="sheet-body"><h2 id="sheet-title"></h2><div class="meta" id="sheet-sub"></div>
+    <div class="facts" id="facts"></div><div class="story" id="story"></div>
+    <table class="table"><tbody id="spec-table"></tbody></table></div>
+  </div></div>
+  <script src="js/app.js"></script>
+</body></html>
