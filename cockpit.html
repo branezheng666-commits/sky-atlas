@@ -1,1 +1,152 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><title>小小机长</title><style>body{margin:0;font-family:sans-serif;background:#0b1526;color:#fff}#note{padding:20px;text-align:center}</style></head><body><div id="note"><p>请使用完整版 cockpit 文件。</p><p><a href="https://cdn.jsdelivr.net/gh/branezheng666-commits/sky-atlas@main/index.html" style="color:#ffd36a">返回图鉴</a></p></div></body></html>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>小小机长 · 卡通驾驶舱</title>
+  <style>
+    :root { --gold:#ffd36a; --orange:#ff8a3d; --text:#f6fbff; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+    body { font-family: "PingFang SC","Hiragino Sans GB","Noto Sans SC","Microsoft YaHei",sans-serif; background:#0b1526; color:var(--text); overflow:hidden; }
+    .app { height:100%; display:grid; grid-template-rows:auto 1fr auto; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 12px; background:linear-gradient(180deg,#1d3358,#15243d); border-bottom:3px solid #ffd36a; }
+    .brand { display:flex; align-items:center; gap:8px; font-weight:800; }
+    .logo { width:36px; height:36px; border-radius:50%; background:#ffd36a; color:#3b2500; display:grid; place-items:center; font-size:20px; }
+    .mission { flex:1; min-width:0; background:#0f2748; border:2px solid #4aa3ff; border-radius:999px; padding:6px 14px; font-size:14px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .top-actions { display:flex; gap:8px; }
+    .tiny { border:0; border-radius:999px; padding:8px 12px; font-weight:800; cursor:pointer; font-size:13px; text-decoration:none; display:inline-flex; align-items:center; }
+    .tiny.gold { background:var(--gold); color:#3b2500; }
+    .tiny.ghost { background:#2a446c; color:#fff; }
+    .view-wrap { position:relative; min-height:180px; }
+    canvas { width:100%; height:100%; display:block; background:#7ecbff; }
+    .hud { position:absolute; left:10px; top:10px; background:rgba(10,20,40,.45); border:2px solid rgba(255,255,255,.35); border-radius:16px; padding:8px 10px; font-size:12px; line-height:1.5; }
+    .buddy { position:absolute; right:8px; top:8px; width:min(280px,46vw); display:flex; gap:8px; align-items:flex-start; }
+    .face { width:54px; height:54px; border-radius:50%; background:#ffe08a; border:3px solid #fff; flex:none; display:grid; place-items:center; font-size:28px; box-shadow:0 6px 0 #e0a84a; }
+    .bubble { background:#fff; color:#20324f; border-radius:16px; padding:8px 10px; font-size:13px; font-weight:700; box-shadow:0 6px 0 #c9e5ff; }
+    .cockpit { background:linear-gradient(180deg,#24385c,#16243c); border-top:8px solid #6b4a2b; padding:8px 10px 12px; }
+    .gauges { display:grid; grid-template-columns:repeat(6,1fr); gap:6px; margin-bottom:8px; }
+    .gauge { background:#0c1730; border:3px solid #d7b36a; border-radius:16px; padding:6px 4px 8px; text-align:center; min-width:0; }
+    .gauge b { display:block; font-size:clamp(14px,3vw,20px); color:#7dffc3; }
+    .gauge span { font-size:11px; color:#9ec2ea; }
+    .ai-box { height:54px; margin:4px auto 0; width:54px; border-radius:50%; overflow:hidden; border:2px solid #8fd0ff; position:relative; background:#5aa8ff; }
+    .ai-ground { position:absolute; left:-20%; right:-20%; height:70%; bottom:0; background:#c9843a; }
+    .ai-line { position:absolute; left:8%; right:8%; height:2px; top:50%; background:#fff; }
+    .controls { display:grid; grid-template-columns:90px 1fr 150px; gap:8px; align-items:stretch; }
+    .throttle { background:#101c33; border-radius:18px; padding:8px; text-align:center; border:2px solid #3d5d8d; }
+    .throttle input { writing-mode:vertical-lr; direction:rtl; height:110px; width:36px; accent-color:#ff8a3d; }
+    .stick-wrap { display:grid; grid-template-columns:1fr 86px; gap:8px; }
+    .stick { background:#101c33; border:2px solid #3d5d8d; border-radius:22px; position:relative; min-height:128px; touch-action:none; }
+    .stick-base { position:absolute; inset:18px; border-radius:50%; border:3px dashed #4e74aa; }
+    .knob { position:absolute; width:54px; height:54px; border-radius:50%; background:radial-gradient(circle at 30% 30%,#fff,#ff8a3d 45%,#c45116); border:3px solid #fff; left:50%; top:50%; transform:translate(-50%,-50%); box-shadow:0 6px 0 #9a3a10; }
+    .switches { display:grid; gap:6px; }
+    .sw { border:0; border-radius:14px; padding:8px 6px; font-weight:800; cursor:pointer; background:#2a4a78; color:#fff; font-size:13px; }
+    .sw.on { background:#1ea36b; }
+    .sw.warn { background:#d9842a; }
+    .keys { display:flex; flex-direction:column; gap:6px; }
+    .keyrow { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; }
+    .key { background:#ffd36a; color:#3b2500; border:0; border-radius:12px; font-weight:900; padding:10px 0; cursor:pointer; font-size:16px; box-shadow:0 4px 0 #d7a63a; }
+    .overlay { position:fixed; inset:0; background:rgba(8,14,28,.72); display:flex; align-items:center; justify-content:center; z-index:20; padding:16px; }
+    .card { width:min(520px,100%); background:#fff; color:#20324f; border-radius:28px; padding:22px; text-align:center; box-shadow:0 16px 0 #b9e0ff; }
+    .card h1 { font-size:28px; margin-bottom:8px; }
+    .card p { margin:8px 0; line-height:1.6; }
+    .how { text-align:left; background:#eef7ff; border-radius:16px; padding:12px; font-size:14px; }
+    .start { margin-top:14px; border:0; background:#ff8a3d; color:#fff; font-size:20px; font-weight:900; border-radius:999px; padding:12px 24px; cursor:pointer; }
+    .hidden { display:none; }
+    @media (max-width:800px){ .gauges{grid-template-columns:repeat(3,1fr);} .controls{grid-template-columns:70px 1fr;} .keys{grid-column:1/-1;} }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="brand"><div class="logo">✈</div>小小机长</div>
+      <div class="mission" id="mission">任务：把油门推上去，飞机跑起来！</div>
+      <div class="top-actions">
+        <button class="tiny ghost" id="assistBtn">辅助：开</button>
+        <button class="tiny gold" id="resetBtn">重新起飞</button>
+      </div>
+    </div>
+    <div class="view-wrap">
+      <canvas id="view"></canvas>
+      <div class="hud" id="hud"></div>
+      <div class="buddy"><div class="face">🦊</div><div class="bubble" id="talk">我是副驾驶小狐！先把橙色油门往上推。</div></div>
+    </div>
+    <div class="cockpit">
+      <div class="gauges">
+        <div class="gauge"><span>空速 km/h</span><b id="g-spd">0</b></div>
+        <div class="gauge"><span>姿态</span><div class="ai-box"><div class="ai-ground" id="ai-g"></div><div class="ai-line"></div></div></div>
+        <div class="gauge"><span>高度 m</span><b id="g-alt">0</b></div>
+        <div class="gauge"><span>航向</span><b id="g-hdg">090</b></div>
+        <div class="gauge"><span>升降 m/s</span><b id="g-vs">0.0</b></div>
+        <div class="gauge"><span>油门 %</span><b id="g-thr">20</b></div>
+      </div>
+      <div class="controls">
+        <div class="throttle"><div style="font-size:12px;font-weight:800;margin-bottom:4px">油门</div><input id="thr" type="range" min="0" max="100" value="20"></div>
+        <div class="stick-wrap">
+          <div class="stick" id="stick"><div class="stick-base"></div><div class="knob" id="knob"></div></div>
+          <div class="switches">
+            <button class="sw" id="flapBtn">襟翼 0°</button>
+            <button class="sw on" id="gearBtn">起落架 放下</button>
+            <button class="sw warn" id="brkBtn">刹车 松开</button>
+          </div>
+        </div>
+        <div class="keys">
+          <div class="keyrow"><span></span><button class="key" data-k="up">↑ 拉杆</button><span></span></div>
+          <div class="keyrow">
+            <button class="key" data-k="left">← 左盘</button>
+            <button class="key" data-k="down">↓ 推杆</button>
+            <button class="key" data-k="right">→ 右盘</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="overlay" id="intro">
+    <div class="card">
+      <h1>🦊 小小机长上岗啦</h1>
+      <p>用浏览器打开就能玩。把油门往上推，速度够了再拉杆起飞。</p>
+      <div class="how">1. <b>油门</b>：左边滑杆，往上推加速。<br>2. <b>驾驶杆</b>：中间橙色圆球，上拉起飞，左右转弯。<br>3. <b>起落架 / 襟翼 / 刹车</b>：右边三个按钮。<br>4. 键盘：方向键或 WASD，G 起落架，F 襟翼，空格刹车。</div>
+      <button class="start" id="go">我来当机长！</button>
+    </div>
+  </div>
+  <div class="overlay hidden" id="end">
+    <div class="card"><h1 id="endTitle">落地成功！</h1><p id="endMsg">你完成了一次起飞和降落。</p><button class="start" id="again">再飞一次</button></div>
+  </div>
+<script>
+const canvas=document.getElementById("view"); const ctx=canvas.getContext("2d");
+const talk=document.getElementById("talk"); const missionEl=document.getElementById("mission");
+const ac={x:0,z:180,alt:0,hdg:0,pitch:0,roll:0,spd:0,vs:0,thr:20,flaps:0,gear:true,brk:false,onGround:true,crashed:false,landed:false,assist:true};
+const input={pitch:0,roll:0}; let step=0, flying=false, last=performance.now();
+const STEPS=["任务：把油门推到 80% 以上，开始滑跑！","任务：速度到 240 以后，轻轻拉杆抬头起飞。","任务：离开地面后收起起落架。","任务：爬升到 800 米，再把飞机飞平。","任务：向右转，让航向接近 180，准备返场。","任务：下降到 300 米，对准跑道。","任务：放下起落架和襟翼，收油门，轻轻落地。"];
+function resize(){ const wrap=canvas.parentElement; canvas.width=wrap.clientWidth*devicePixelRatio; canvas.height=wrap.clientHeight*devicePixelRatio; ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0); }
+addEventListener("resize",resize); resize();
+document.getElementById("go").onclick=()=>{ document.getElementById("intro").classList.add("hidden"); flying=true; };
+document.getElementById("again").onclick=reset; document.getElementById("resetBtn").onclick=reset;
+document.getElementById("assistBtn").onclick=()=>{ ac.assist=!ac.assist; document.getElementById("assistBtn").textContent="辅助："+(ac.assist?"开":"关"); };
+function reset(){ Object.assign(ac,{x:0,z:180,alt:0,hdg:0,pitch:0,roll:0,spd:0,vs:0,thr:20,flaps:0,gear:true,brk:false,onGround:true,crashed:false,landed:false}); document.getElementById("thr").value=20; document.getElementById("end").classList.add("hidden"); step=0; flying=true; say("重新开始！先推油门。"); syncButtons(); }
+function say(t){ talk.textContent=t; }
+document.getElementById("thr").addEventListener("input",e=>ac.thr=+e.target.value);
+document.getElementById("flapBtn").onclick=()=>{ ac.flaps=ac.flaps===0?15:ac.flaps===15?30:0; syncButtons(); };
+document.getElementById("gearBtn").onclick=()=>{ if(!ac.onGround||ac.alt>2) ac.gear=!ac.gear; syncButtons(); };
+document.getElementById("brkBtn").onclick=()=>{ ac.brk=!ac.brk; syncButtons(); };
+function syncButtons(){ const f=document.getElementById("flapBtn"); f.textContent="襟翼 "+ac.flaps+"°"; f.classList.toggle("on",ac.flaps>0); const g=document.getElementById("gearBtn"); g.textContent=ac.gear?"起落架 放下":"起落架 收起"; g.classList.toggle("on",ac.gear); const b=document.getElementById("brkBtn"); b.textContent=ac.brk?"刹车 踩住":"刹车 松开"; b.classList.toggle("warn",!ac.brk); b.classList.toggle("on",ac.brk); }
+const keys={};
+addEventListener("keydown",e=>{ keys[e.key.toLowerCase()]=true; if(e.key==="g"||e.key==="G"){ac.gear=!ac.gear;syncButtons();} if(e.key==="f"||e.key==="F"){ac.flaps=ac.flaps===0?15:ac.flaps===15?30:0;syncButtons();} if(e.code==="Space"){ac.brk=true;syncButtons();e.preventDefault();} });
+addEventListener("keyup",e=>{ keys[e.key.toLowerCase()]=false; if(e.code==="Space"){ac.brk=false;syncButtons();} });
+document.querySelectorAll(".key").forEach(btn=>{ const apply=on=>{ const k=btn.dataset.k; if(k==="up")keys.arrowup=on; if(k==="down")keys.arrowdown=on; if(k==="left")keys.arrowleft=on; if(k==="right")keys.arrowright=on; }; btn.addEventListener("pointerdown",e=>{apply(true);e.preventDefault();}); addEventListener("pointerup",()=>apply(false)); });
+const stick=document.getElementById("stick"); const knob=document.getElementById("knob"); let dragging=false;
+function setStick(nx,ny){ const r=stick.getBoundingClientRect(); let x=(nx-r.left)/r.width*2-1; let y=(ny-r.top)/r.height*2-1; const m=Math.hypot(x,y); if(m>1){x/=m;y/=m;} input.roll=x; input.pitch=-y; knob.style.left=((x+1)/2*100)+"%"; knob.style.top=((y+1)/2*100)+"%"; }
+stick.addEventListener("pointerdown",e=>{ dragging=true; stick.setPointerCapture(e.pointerId); setStick(e.clientX,e.clientY); });
+stick.addEventListener("pointermove",e=>{ if(dragging) setStick(e.clientX,e.clientY); });
+stick.addEventListener("pointerup",()=>{ dragging=false; input.roll=0; input.pitch=0; knob.style.left="50%"; knob.style.top="50%"; });
+function update(dt){ if(!flying||ac.crashed||ac.landed) return; let pIn=input.pitch,rIn=input.roll; if(keys.arrowup||keys.w)pIn+=1; if(keys.arrowdown||keys.s)pIn-=1; if(keys.arrowleft||keys.a)rIn-=1; if(keys.arrowright||keys.d)rIn+=1; if(keys.shift)ac.thr=Math.min(100,ac.thr+40*dt); if(keys.control)ac.thr=Math.max(0,ac.thr-40*dt); document.getElementById("thr").value=ac.thr|0; pIn=Math.max(-1,Math.min(1,pIn)); rIn=Math.max(-1,Math.min(1,rIn)); const targetPitch=pIn*(ac.assist?8:14); const targetRoll=rIn*(ac.assist?18:28); ac.pitch+=(targetPitch-ac.pitch)*Math.min(1,3*dt); ac.roll+=(targetRoll-ac.roll)*Math.min(1,3*dt); if(ac.assist){ ac.roll*=Math.pow(0.2,dt); if(Math.abs(pIn)<0.05) ac.pitch*=Math.pow(0.35,dt);} const thrust=ac.thr*0.085; const drag=ac.spd*ac.spd*0.000035+(ac.gear?4:0)+ac.flaps*0.08+(ac.brk&&ac.onGround?28:0); ac.spd+=(thrust*12-drag*0.08-(ac.onGround?3:0))*dt*10; if(ac.spd<0)ac.spd=0; if(ac.spd>880)ac.spd=880; const lift=ac.spd*(0.012+ac.flaps*0.00025)+ac.pitch*2.2; if(ac.onGround){ ac.vs=0; ac.alt=0; if(ac.spd>230&&ac.pitch>4){ ac.onGround=false; say("起飞啦！收起落架，继续爬升。"); } } else { ac.vs=lift-9.2-(ac.spd<180?8:0); ac.alt+=ac.vs*dt*8; if(ac.alt<0){ ac.alt=0; if(Math.abs(ac.vs)>12||ac.spd>320||!ac.gear){ ac.crashed=true; finish(false);} else { ac.onGround=true; ac.landed=true; ac.vs=0; ac.pitch=0; finish(true);} } } if(!ac.onGround) ac.hdg+=ac.roll*0.45*dt*(ac.spd/200); else ac.hdg+=rIn*12*dt*(ac.spd/80); ac.hdg=(ac.hdg+360)%360; const rad=ac.hdg*Math.PI/180; const ms=ac.spd/3.6; ac.x+=Math.sin(rad)*ms*dt; ac.z+=Math.cos(rad)*ms*dt; advanceMission(); }
+function advanceMission(){ if(step===0&&ac.thr>=80&&ac.spd>40){step=1;say("跑起来了！速度到 240 就轻轻拉杆。");} else if(step===1&&!ac.onGround){step=2;} else if(step===2&&!ac.gear){step=3;say("起落架收好了。继续爬到 800 米。");} else if(step===3&&ac.alt>=800){step=4;say("高度够了！向右转，航向对准 180。");} else if(step===4&&ac.hdg>150&&ac.hdg<210&&ac.alt>400){step=5;say("返场了。慢慢收油门下降。");} else if(step===5&&ac.alt<300&&ac.alt>20){step=6;say("放下起落架和襟翼，对准跑道降落。");} missionEl.textContent=STEPS[step]; }
+function finish(ok){ flying=false; document.getElementById("endTitle").textContent=ok?"落地成功！🏆":"这次有点重 💥"; document.getElementById("endMsg").textContent=ok?"你完成了起飞、爬升、转弯和降落。":"落地要慢一点，记得放下起落架。"; document.getElementById("end").classList.remove("hidden"); }
+function draw(){ const w=canvas.width/devicePixelRatio,h=canvas.height/devicePixelRatio; const horizon=h*0.52+ac.pitch*6; ctx.save(); ctx.translate(w/2,horizon); ctx.rotate(-ac.roll*Math.PI/180); ctx.translate(-w/2,-horizon); const sky=ctx.createLinearGradient(0,-h,0,horizon); sky.addColorStop(0,"#8fd3ff"); sky.addColorStop(1,"#c9ecff"); ctx.fillStyle=sky; ctx.fillRect(-w,-h,w*3,h+horizon+20); ctx.fillStyle="#7bc45a"; ctx.fillRect(-w,horizon,w*3,h*2); drawRunway(w,h,horizon); drawClouds(w,horizon); ctx.restore(); ctx.strokeStyle="#2b1a0d"; ctx.lineWidth=14; ctx.strokeRect(8,8,w-16,h-16); ctx.beginPath(); ctx.moveTo(w/2,8); ctx.lineTo(w/2,h-8); ctx.stroke(); document.getElementById("g-spd").textContent=ac.spd|0; document.getElementById("g-alt").textContent=Math.max(0,ac.alt)|0; document.getElementById("g-hdg").textContent=String((ac.hdg+90+360)%360|0).padStart(3,"0"); document.getElementById("g-vs").textContent=ac.vs.toFixed(1); document.getElementById("g-thr").textContent=ac.thr|0; document.getElementById("ai-g").style.transform=`translateY(${ac.pitch*1.4}px) rotate(${-ac.roll}deg)`; document.getElementById("hud").innerHTML=`模式：${ac.onGround?"地面滑跑":"空中飞行"}<br>襟翼 ${ac.flaps}°　起落架 ${ac.gear?"放下":"收起"}`; }
+function drawRunway(w,h,horizon){ const relH=ac.hdg*Math.PI/180; const pts=[[-30,0],[30,0],[30,3200],[-30,3200]].map(([x,z])=>{ const dx=x-ac.x,dz=z-ac.z; return {fx:dx*Math.cos(-relH)-dz*Math.sin(-relH), fz:dx*Math.sin(-relH)+dz*Math.cos(-relH)}; }); if(pts.every(p=>p.fz<8)) return; const project=p=>{ const z=Math.max(12,p.fz); const s=280/z; return [w/2+p.fx*s*8, horizon+(20-ac.alt*0.04)*(280/z)+40]; }; const q=pts.map(project); ctx.fillStyle="#5b6270"; ctx.beginPath(); ctx.moveTo(q[0][0],q[0][1]); for(let i=1;i<q.length;i++) ctx.lineTo(q[i][0],q[i][1]); ctx.closePath(); ctx.fill(); }
+function drawClouds(w,horizon){ ctx.fillStyle="rgba(255,255,255,.9)"; for(let i=0;i<6;i++){ const x=((i*220+ac.z*0.05)%(w+200))-80; const y=horizon-90-(i%3)*28-ac.alt*0.02; ctx.beginPath(); ctx.arc(x,y,28+i*3,0,7); ctx.arc(x+28,y+4,22,0,7); ctx.fill(); } }
+function loop(t){ const dt=Math.min(0.05,(t-last)/1000); last=t; update(dt); draw(); requestAnimationFrame(loop); }
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
